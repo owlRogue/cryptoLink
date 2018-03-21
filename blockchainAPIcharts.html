@@ -31,12 +31,16 @@
         border-radius: 100px;
     }
 
-    .crypto-button-color {
+    .crypto-request-color {
         color: slategray;
     }
 
     .request-color {
-        color: rgb(97, 167, 214);
+        color: rgb(36, 65, 9);
+    }
+
+    .request-rate {
+        color: rgb(0, 70, 117);
     }
 </style>
 
@@ -77,8 +81,8 @@
                 var queryURL = "https://rest.coinapi.io/v1/exchangerate/" + currency +
                     "?apikey=D71DDEDE-0DCF-49C1-B3AB-880EE48E4617";
                 var comparisonCoin = [];
-                var compareCoinName = [];
                 var compareCoinRate = [];
+                // var compareCoinName = [];
 
                 $.ajax({
                     url: queryURL,
@@ -94,7 +98,7 @@
                         console.log(comparisonCoin[i]);
                         console.log(comparisonCoin[i].asset_id_quote);
                         console.log(comparisonCoin[i].rate);
-                        $("#currency-view").text(JSON.stringify(response));
+                        //$("#currency-view").text(JSON.stringify(response));
 
                         var compareCoinName = comparisonCoin[i].asset_id_quote;
                         var compareRate = comparisonCoin[i].rate;
@@ -102,8 +106,9 @@
                         //$("#currency-view").text(JSON.stringify(comparisonCoin));
 
                         var cryptoBtn = $("<button>").addClass(
-                                "crypto-button crypto crypto-button-color")
+                                "crypto-button crypto crypto-request-color")
                             .attr("data-crypto", compareCoinName)
+                            .attr("data-rate", compareRate)
                             .text(compareCoinName)
                             .appendTo("#buttons");
                     };
@@ -113,13 +118,12 @@
                         var requestToDisplay = $("<div>").addClass("crypto request-color")
                             .text($(this).attr("data-crypto"))
                             .appendTo("#display");
-
                     });
 
                     $(".crypto-button").on("click", function () {
 
                         var requestrateToDisplay = $("<div>").addClass("crypto request-rate")
-                            .text(JSON.stringify.compareRate)
+                            .text($(this).attr("data-rate"))
                             .appendTo("#display");
 
                     });
