@@ -71,7 +71,7 @@
         <form id="currency-form">
             <label for="currency-input">Select your currencies</label>
             <input type="checkbox" name="cryptoName" id="currency-input" value="BTC">BTC
-            
+
             <br>
 
             <!-- This button will trigger our AJAX call -->
@@ -91,7 +91,7 @@
                     // Here, it prevents the submit button from trying to submit a form when clicked
                     event.preventDefault();
 
-                    var currency = {BTC}
+                    var currency = $("#currency-input").val();
                     var queryURL = "https://rest.coinapi.io/v1/exchangerate/" + currency +
                         "?apikey=C3F818BB-21EF-425E-B53C-B069172C81CD";
                     var quoteCoin = [];
@@ -104,10 +104,8 @@
                     }).then(function (response) {
                         console.log(response);
 
-                        currency = $("#currency-input").val();
                         quoteCoin = response.rates;
                         compareCoinRate = compareRate;
-                        
                        // USDbase = response.rates
 
                         for (var i = 0; i < quoteCoin.length; i++) {
@@ -116,39 +114,33 @@
                             console.log(quoteCoin[i].rate);
                             //$("#currency-view").text(JSON.stringify(response));
 
-                            var compareUSD = quoteCoin[i].asset_id_quote;
                             var compareCoinName = quoteCoin[i].asset_id_quote;
                             var compareRate = quoteCoin[i].rate;
+                            
 
-                            var displayVal = $("<div>").addClass("crypto crypto-name")
-                                .text(compareCoinName + "  " + compareRate)
-                                
+                            //$("#currency-view").text(JSON.stringify(quoteCoin));
 
                             var cryptoBtn = $("<button>").addClass(
                                     "crypto-button crypto crypto-crypto-name")
                                 .attr("data-crypto", compareCoinName)
                                 .attr("data-rate", compareRate)
-                                .text(compareCoinName);
-
-                            if (compareUSD === 'USD') {
-                                displayVal.prependTo('#display');
-                                cryptoBtn.prependTo('#buttons');
-                            } else {
-                                cryptoBtn.appendTo("#buttons");
-                            }
+                                .text(compareCoinName)
+                                .appendTo("#buttons");
                         };
 
                         $(".crypto-button").on("click", function () {
 
-                            $("<div>").addClass("crypto crypto-name")
-                                .text($(this).attr("data-crypto") + "  " + $(this).attr("data-rate"))
+                            var requestToDisplay = $("<div>").addClass(
+                                    "crypto crypto-name")
+                                .text($(this).attr("data-crypto") + "  " + $(this).attr(
+                                    "data-rate"))
                                 .appendTo("#display");
                         });
                     });
                 });
 
-              //  var topDisplay = $("<div>").addClass("crypto highlights")
-              //  text(USDbase).appendTo("#topDisplay");
+             //   var topDisplay = $("<div>").addClass("crypto highlights")
+                //text(USDbase).appendTo("#topDisplay");
 
             });
             // -----------------------------------------------------------------------
