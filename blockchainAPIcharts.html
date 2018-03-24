@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Favorite currencys</title>
+    <title>currencies</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
         crossorigin="anonymous">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Josefin+Sans:100,400,600,700">
@@ -31,16 +31,25 @@
         border-radius: 100px;
     }
 
-    .crypto-request-color {
+    .crypto-crypto-name {
         color: slategray;
     }
 
-    .request-color {
+    .highlights {
+        color: red;
+    }
+
+    .crypto-name {
         color: rgb(36, 65, 9);
     }
 
     .request-rate {
         color: rgb(0, 70, 117);
+    }
+
+    #topDisplay {
+        background-color: black;
+        color: white;
     }
 </style>
 
@@ -51,6 +60,7 @@
     <div class="container">
         <h1>Currency Search</h1>
 
+        <div id="topDisplay"></div>
         <div id="display"></div>
         <div id="buttons"></div>
 
@@ -61,77 +71,79 @@
         <form id="currency-form">
             <label for="currency-input">Select your currencies</label>
             <input type="checkbox" name="cryptoName" id="currency-input" value="BTC">BTC
+            <input type="checkbox" name="cryptoName" id="currency-input" value="USD">USD
             <br>
 
             <!-- This button will trigger our AJAX call -->
             <input id="find-currency" type="submit" value="Currency Search">
         </form>
 
-
+        <script src="https://rawgit.com/mzabriskie/axios/master/dist/axios.min.js"></script>
+        <script src="https://rawgit.com/coinapi/coinapi-sdk/master/javascript-rest/coinapi_v1.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script type="text/javascript">
-            // RETURNS EXCHANGE RATE
-            $("#find-currency").on("click", function (event) {
 
-                // event.preventDefault() can be used to prevent an event's default behavior.
-                // Here, it prevents the submit button from trying to submit a form when clicked
-                event.preventDefault();
+            $('document').ready(function (event) {
+                // RETURNS EXCHANGE RATE
+                $("#find-currency").on("click", function (event) {
 
-                var currency = $("#currency-input").val();
-                var queryURL = "https://rest.coinapi.io/v1/exchangerate/" + currency +
-                    "?apikey=D71DDEDE-0DCF-49C1-B3AB-880EE48E4617";
-                var comparisonCoin = [];
-                var compareCoinRate = [];
-                // var compareCoinName = [];
+                    // event.preventDefault() can be used to prevent an event's default behavior.
+                    // Here, it prevents the submit button from trying to submit a form when clicked
+                    event.preventDefault();
 
-                $.ajax({
-                    url: queryURL,
-                    method: "GET"
-                }).then(function (response) {
-                    //$("#currency-view").text(JSON.stringify(response));
-                    console.log(response);
+                    var currency = $("#currency-input").val();
+                    var queryURL = "https://rest.coinapi.io/v1/exchangerate/" + currency +
+                        "?apikey=C3F818BB-21EF-425E-B53C-B069172C81CD";
+                    var quoteCoin = [];
+                    var compareCoinRate = [];
+                    const USDbase = [];
 
-                    comparisonCoin = response.rates;
-                    compareCoinRate = compareRate;
+                    $.ajax({
+                        url: queryURL,
+                        method: "GET"
+                    }).then(function (response) {
+                        console.log(response);
 
-                    for (var i = 0; i < comparisonCoin.length; i++) {
-                        console.log(comparisonCoin[i]);
-                        console.log(comparisonCoin[i].asset_id_quote);
-                        console.log(comparisonCoin[i].rate);
-                        //$("#currency-view").text(JSON.stringify(response));
+                        quoteCoin = response.rates;
+                        compareCoinRate = compareRate;
+                       // USDbase = response.rates
 
-                        var compareCoinName = comparisonCoin[i].asset_id_quote;
-                        var compareRate = comparisonCoin[i].rate;
+                        for (var i = 0; i < quoteCoin.length; i++) {
+                            console.log(quoteCoin[i]);
+                            console.log(quoteCoin[i].asset_id_quote);
+                            console.log(quoteCoin[i].rate);
+                            //$("#currency-view").text(JSON.stringify(response));
 
-                        //$("#currency-view").text(JSON.stringify(comparisonCoin));
+                            var compareCoinName = quoteCoin[i].asset_id_quote;
+                            var compareRate = quoteCoin[i].rate;
+                            
 
-                        var cryptoBtn = $("<button>").addClass(
-                                "crypto-button crypto crypto-request-color")
-                            .attr("data-crypto", compareCoinName)
-                            .attr("data-rate", compareRate)
-                            .text(compareCoinName)
-                            .appendTo("#buttons");
-                    };
+                            //$("#currency-view").text(JSON.stringify(quoteCoin));
 
-                    $(".crypto-button").on("click", function () {
+                            var cryptoBtn = $("<button>").addClass(
+                                    "crypto-button crypto crypto-crypto-name")
+                                .attr("data-crypto", compareCoinName)
+                                .attr("data-rate", compareRate)
+                                .text(compareCoinName)
+                                .appendTo("#buttons");
+                        };
 
-                        var requestToDisplay = $("<div>").addClass("crypto request-color")
-                            .text($(this).attr("data-crypto"))
-                            .appendTo("#display");
-                    });
+                        $(".crypto-button").on("click", function () {
 
-                    $(".crypto-button").on("click", function () {
-
-                        var requestrateToDisplay = $("<div>").addClass("crypto request-rate")
-                            .text($(this).attr("data-rate"))
-                            .appendTo("#display");
-
+                            var requestToDisplay = $("<div>").addClass(
+                                    "crypto crypto-name")
+                                .text($(this).attr("data-crypto") + "  " + $(this).attr(
+                                    "data-rate"))
+                                .appendTo("#display");
+                        });
                     });
                 });
 
-                // -----------------------------------------------------------------------
+             //   var topDisplay = $("<div>").addClass("crypto highlights")
+                //text(USDbase).appendTo("#topDisplay");
 
             });
+            // -----------------------------------------------------------------------
         </script>
     </div>
 </body>
